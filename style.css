@@ -1,6 +1,4 @@
-/* www/style.css */
-
-/* --- Global layout ------------------------------------------------------- */
+/* www/site/style.css */
 
 *,
 *::before,
@@ -12,8 +10,8 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background: #000;
-  color: #e5e5e5;
+  background: #ffffff;
+  color: #000000;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
@@ -28,7 +26,7 @@ body {
   font-size: 0.95rem;
 }
 
-/* --- Header & footer ----------------------------------------------------- */
+/* Header / footer */
 
 .man-header,
 .man-footer {
@@ -37,36 +35,31 @@ body {
   align-items: baseline;
   font-weight: 700;
   font-size: 0.9rem;
-  color: #9cdcfe;
 }
 
 .man-header-center,
 .man-footer-center {
-  text-align: center;
   flex: 1;
+  text-align: center;
 }
 
 .man-header-left,
-.man-footer-left,
 .man-header-right,
+.man-footer-left,
 .man-footer-right {
   flex: 0 0 auto;
 }
 
 .man-rule {
   border: none;
-  border-top: 1px solid #666;
+  border-top: 1px solid #cccccc;
   margin: 0.5rem 0 1rem 0;
 }
 
-/* --- Sections ------------------------------------------------------------ */
+/* Sections */
 
 .man-section {
   margin-bottom: 1.25rem;
-}
-
-.man-section:last-of-type {
-  margin-bottom: 2rem;
 }
 
 .man-section h2 {
@@ -74,31 +67,29 @@ body {
   font-size: 0.9rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #4ec9b0;
 }
 
 .man-section p {
   margin: 0.25rem 0;
 }
 
-/* --- NAME / labels ------------------------------------------------------- */
+/* Labels / names */
 
 .man-name {
   font-weight: 700;
-  color: #dcdcaa;
 }
 
-/* --- Preformatted blocks ------------------------------------------------- */
+/* Preformatted */
 
 .man-pre {
   margin: 0.25rem 0;
   padding: 0.5rem 0.75rem;
-  background: #050505;
-  border: 1px solid #333;
+  background: #f5f5f5;
+  border: 1px solid #dddddd;
   overflow-x: auto;
 }
 
-/* --- Definition lists ---------------------------------------------------- */
+/* Definition lists */
 
 .man-dl {
   margin: 0.25rem 0;
@@ -107,14 +98,13 @@ body {
 .man-dl dt {
   font-weight: 700;
   margin-top: 0.5rem;
-  color: #c586c0;
 }
 
 .man-dl dd {
   margin: 0.1rem 0 0.4rem 1.5rem;
 }
 
-/* --- Lists --------------------------------------------------------------- */
+/* Lists */
 
 .man-list {
   list-style: none;
@@ -124,17 +114,16 @@ body {
 
 .man-list li::before {
   content: " - ";
-  color: #6a9955;
 }
 
 .man-list li {
   margin: 0.1rem 0;
 }
 
-/* --- Links & buttons ----------------------------------------------------- */
+/* Links */
 
 a {
-  color: #569cd6;
+  color: #0000ee;
   text-decoration: none;
 }
 
@@ -144,40 +133,28 @@ a:focus-visible {
 }
 
 .man-link-label {
-  color: #808080;
+  color: #555555;
 }
 
 .man-files-link {
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 
-.man-button {
-  display: inline-block;
-  padding: 0.35rem 0.75rem;
-  border: 1px solid #666;
-  border-radius: 2px;
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: 0.75rem;
+.man-link {
+  font-weight: 700;
 }
 
-.man-button:hover,
-.man-button:focus-visible {
-  background: #111;
-}
-
-/* --- Footer -------------------------------------------------------------- */
+/* Footer */
 
 .man-footer {
   margin-top: 1.5rem;
   padding-top: 0.5rem;
-  border-top: 1px solid #666;
+  border-top: 1px solid #cccccc;
   font-size: 0.8rem;
-  color: #808080;
+  color: #555555;
 }
 
-/* --- Responsive tweaks --------------------------------------------------- */
+/* Responsive */
 
 @media (max-width: 600px) {
   .man-header,
