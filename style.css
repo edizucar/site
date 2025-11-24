@@ -1,0 +1,194 @@
+/* www/style.css */
+
+/* --- Global layout ------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #e5e5e5;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+body {
+  padding: 1.5rem 0.75rem;
+}
+
+.manpage {
+  max-width: 80ch;
+  margin: 0 auto;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+/* --- Header & footer ----------------------------------------------------- */
+
+.man-header,
+.man-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #9cdcfe;
+}
+
+.man-header-center,
+.man-footer-center {
+  text-align: center;
+  flex: 1;
+}
+
+.man-header-left,
+.man-footer-left,
+.man-header-right,
+.man-footer-right {
+  flex: 0 0 auto;
+}
+
+.man-rule {
+  border: none;
+  border-top: 1px solid #666;
+  margin: 0.5rem 0 1rem 0;
+}
+
+/* --- Sections ------------------------------------------------------------ */
+
+.man-section {
+  margin-bottom: 1.25rem;
+}
+
+.man-section:last-of-type {
+  margin-bottom: 2rem;
+}
+
+.man-section h2 {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #4ec9b0;
+}
+
+.man-section p {
+  margin: 0.25rem 0;
+}
+
+/* --- NAME / labels ------------------------------------------------------- */
+
+.man-name {
+  font-weight: 700;
+  color: #dcdcaa;
+}
+
+/* --- Preformatted blocks ------------------------------------------------- */
+
+.man-pre {
+  margin: 0.25rem 0;
+  padding: 0.5rem 0.75rem;
+  background: #050505;
+  border: 1px solid #333;
+  overflow-x: auto;
+}
+
+/* --- Definition lists ---------------------------------------------------- */
+
+.man-dl {
+  margin: 0.25rem 0;
+}
+
+.man-dl dt {
+  font-weight: 700;
+  margin-top: 0.5rem;
+  color: #c586c0;
+}
+
+.man-dl dd {
+  margin: 0.1rem 0 0.4rem 1.5rem;
+}
+
+/* --- Lists --------------------------------------------------------------- */
+
+.man-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.25rem 0;
+}
+
+.man-list li::before {
+  content: " - ";
+  color: #6a9955;
+}
+
+.man-list li {
+  margin: 0.1rem 0;
+}
+
+/* --- Links & buttons ----------------------------------------------------- */
+
+a {
+  color: #569cd6;
+  text-decoration: none;
+}
+
+a:hover,
+a:focus-visible {
+  text-decoration: underline;
+}
+
+.man-link-label {
+  color: #808080;
+}
+
+.man-files-link {
+  margin-top: 0.5rem;
+}
+
+.man-button {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #666;
+  border-radius: 2px;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+}
+
+.man-button:hover,
+.man-button:focus-visible {
+  background: #111;
+}
+
+/* --- Footer -------------------------------------------------------------- */
+
+.man-footer {
+  margin-top: 1.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #666;
+  font-size: 0.8rem;
+  color: #808080;
+}
+
+/* --- Responsive tweaks --------------------------------------------------- */
+
+@media (max-width: 600px) {
+  .man-header,
+  .man-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+  }
+
+  .man-header-center,
+  .man-footer-center {
+    text-align: left;
+  }
+}
