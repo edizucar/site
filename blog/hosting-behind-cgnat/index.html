@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>blog(7) - Hosting behind CGNAT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main class="manpage">
+
+  <pre class="man-header">BLOG(7)                   User Manual                  BLOG(7)</pre>
+  <hr class="man-rule">
+
+  <section class="man-section">
+    <h2>NAME</h2>
+    <p>
+      <span class="man-name">hosting-behind-cgnat</span> - How to host web services when your ISP uses CGNAT
+    </p>
+  </section>
+
+  <section class="man-section">
+    <h2>METADATA</h2>
+    <dl class="man-dl">
+      <dt>Author</dt>
+      <dd>Ediz Ucar</dd>
+
+      <dt>Date</dt>
+      <dd>2025-11-26</dd>
+
+      <dt>Tags</dt>
+      <dd>homelab, selfhost</dd>
+    </dl>
+  </section>
+
+  <section class="man-section">
+    <h2>DESCRIPTION</h2>
+
+    <p>
+      If you found that your self hosted web services stopped working after changing ISP, you may be in the same position I was this autumn. 
+      I switched from POP Telecom (who are terrible for customer service) to Hyperoptic. 
+      The only problem was, after I went through the trouble of portforwarding my services (jellyfin, website etc), I wasn't able to access them from outside the local network.
+      I was very confused until I discovered Hyperoptic uses <a href="https://en.wikipedia.org/wiki/Carrier-grade_NAT" class="man-link">CGNAT</a>, Carrier-grade NAT.
+    </p>
+
+    <h3>Carrier-grade NAT</h3>
+    <p>
+      IPv4 has run out of addresses. One solution to this is <a href="https://en.wikipedia.org/wiki/Network_address_translation" class="man-link">NAT</a>, network address translation. 
+      The basic idea is that devices inside a local (home) network don't need to have a globally unique address, only the router does. The router keeps track of which traffic should go to which local device.
+      This is why at home you will frequently see your IPs as being <code>192.168.x.x</code>. This is an address range that we've collectively agreed to only use locally.
+    </p>
+
+    <p>
+      NAT was introduced as a short term fix in <a href="https://www.rfc-editor.org/rfc/rfc1631" class="man-link">1994</a>. Unfortunately, this doesn't solve the problem. 
+      Now, ISPs are running out of unique IPv4s to assign to the routers they distribute. So along comes CGNAT. The idea is to apply the NAT but at the router level.
+      This means that routers' IPs are no longer globally unique. The ISP does address translation so that the right home network gets the right network traffic.
+    </p>
+
+    <p>
+      <b>Problem</b>: how do you host a service when you don't have a globally unique address that people can find you on? There are multiple answers to this - the long term one being: 
+      <a href="https://en.wikipedia.org/wiki/IPv6" class="man-link">IPv6</a>. IPv6 has it's own quirks so I didn't want to go down that route. The 
+      <a href="https://en.wikipedia.org/wiki/Cloudflare#November_2025_outag" class="man-link">November 2025 Cloudflare Outage</a> reminded me that a service called 
+      <a href="https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/" class="man-link">Cloudflare Tunnel</a> exists and I decided to check it out.
+    </p>
+
+    <h3>Hosting behind CGNAT with Cloudflare Tunnel</h3>
+    <p>
+      Cloudflare tunnel works by routing traffic through Cloudflare. You don't need your own unique IP because Cloudflare has plenty. Users simply tunnel (good name eh?) through Cloudflare to get to your site.
+      You run a daemon, which keeps a long lived connection to Cloudflare, on the host machine so that Cloudflare know where to send traffic.
+    </p>
+
+    <h4>Create a Cloudflare Account</h4>
+    <p>
+      We need to add the domain to the Cloudflare dashboard to manage it here. Once you have created your account and entered the dashboard, find 'domains' then 'onboard a domain'. 
+      You should enter the domain you own and proceed through the steps listed (pick 'free tier' if prompted - this entire process is free). 
+      For me this involved logging into my domain provider's (IONOS) dashboard, disabling DNSSEC (which took 24 hrs) and setting the name servers to Cloudflares'.
+      Cloudflare links <a href="https://developers.cloudflare.com/dns/nameservers/update-nameservers" class="man-link">provider specific instructions</a> so this shouldn't be too difficult.
+    </p>
+
+    <img src="./cloudflare-account-home.png" alt="Cloudflare accout home showing domain successfully added" class="man-image"></img>
+    <p class="man-caption">Once the domain has been successfully added it should look like this in the Cloudflare account home</p>
+    
+    <h4>Create the tunnel</h4>
+    <p>
+      In the Cloudflare account home, you should be able to find the '<b>Zero Trust</b>' section. The first time I went on it, it asked for some information which I provided. 
+      I chose the the free tier but it still asked for my card details. 
+      You can just go back to the account home at this point and when you enter Zero Trust again, you should see a new dashboard. Navigate to <b>Networks</b>, then <b>Connectors</b>.
+      At this point you should see a <b>Create a tunnel</b> button that you should click and select <b>Cloudflared</b>. Then you name the tunnel and create it. You can then go back to the Connectors dashboard and see it listed.
+    </p>
+    <img src="./connectors.png" alt="Connectors dashboard with a new tunnel listed" class="man-image"></img>
+    <p class="man-caption">We can see a new tunnel that is inactive</p>
+
+    <h4>Connecting your server to the tunnel</h4>
+    <p>
+      How you will connect to the server depends on your server's OS but roughly, it will be the same. You should click configure on the tunnel and it'll provide different instructions per OS.
+      My server is using TrueNAS, which isn't listed. The important part is the api key. Annoyingly they don't show this separately, you'll have to extract it from the command box.
+    </p>
+    <img src="./api.png" alt="api key to connect to tunnel" class="man-image"></img>
+    <p class="man-caption">We can see a new tunnel that is inactive</p>
+    <p>
+      You should now run Cloudflared on your server and provide it with that API key - keep this key private! If everything goes to plan, the INACTIVE label on the tunnel listing in the dashboard should change to HEALTHY.
+    </p>
+
+    <h4>Publishing routes to applications</h4>
+    <p>
+      We now need to specify routes to the different applications to expose. To do this, go to the Connectors dashboard and configure the tunnel. 
+      Select the 'publish application routes' tab and click 'add a published application route'. Here you need to provide the url that you want your service to be on e.g. <code>jellyfin.edizucar.com</code>.
+      You also need to specify how to access the application locally e.g. <code>192.168.1.10:8000</code>. And we are done!
+    </p>
+  </section>
+
+    <section class="man-section">
+    <h2>CONTACT</h2>
+    <p>
+      If you have any feedback for this post (positive, negative, suggstions, praise, questions are all welcome) please email me.
+      <dd>
+        ediz (at) edizucar (dot) co (dot) uk
+      </dd>
+    </p>
+  </section>
+
+
+  <section class="man-section">
+    <h2>SEE ALSO</h2>
+    <p>
+      <a href="/blog/" class="man-link">blog(7)</a>,
+      <a href="/" class="man-link">ediz(7)</a>
+    </p>
+  </section>
+
+  <footer class="man-footer">
+    <pre class="man-footer-line">BLOG(7)                   User Manual                  BLOG(7)</pre>
+    <div class="man-footer-meta">Last updated: 2025-11-26</div>
+  </footer>
+
+</main>
+</body>
+</html>
